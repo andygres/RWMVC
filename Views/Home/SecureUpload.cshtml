@@ -1,0 +1,171 @@
+﻿@model Document
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Secure Upload | Morreale Real Estate Services, Inc</title>
+
+    <!-- is there a place we can put the following as it is global -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="~/css/site.css">
+
+    <!-- END Global -->
+
+    <style>
+
+        html {
+            background-image: linear-gradient( rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45) ), url(https://morrealeres.com/morreale/wp-content/themes/morreale/images/secure-upload-bg.jpg);
+            background-size: cover !important;
+            background-repeat: no-repeat;
+            height: 100%;
+            background-position: center;
+        }
+    </style>
+
+</head>
+<body id="secure-upload-body">
+    <div class="hc-pre-con"></div>
+
+    <div class="container">
+
+        <form id="form1" class="morreale-form secure-upload" action="/Home/DoUpload" method="post">
+
+            <img src="https://morrealeres.com/morreale/wp-content/themes/morreale/images/MRES-Logo-Only-2.png)" class="logo" />
+
+            <img src="https://morrealeres.com/morreale/wp-content/themes/morreale/images/secure-document-vault-2.png)" class="logo" />
+
+            <span ID="Label1" class="hidden-label">File Number: </span>
+
+            <input type="text" ID="txtFileNum" name="FileNumber" placeholder="File Number"/>
+           
+            <span ID="RequiredFieldValidator1" Class="error-form" style="display:none;">This field is required.</span>
+
+            <span ID="CustomValidator1" Class="error-form" style="display:none">This is not a valid file number.</span>
+
+            <span ID="lblValidFN"></span>
+
+            <div class="file-drop-area" id="fileDrop">
+                <span class="fake-btn">Choose Document</span>
+                <span class="file-msg">or drag and drop files here</span>
+                <input type="file" name="File" ID="fuDocument" class="file-input" />
+            </div>
+            <div>
+                <span ID="RequiredFieldValidator2" CssClass="error-form" style="display:none;">Please select a valid document.</span>
+            </div>
+
+            <select name="DocumentType" ID="ddlDocType">
+                <option Value="57">Mortgage Statement</option>
+                <option Value="1668">HOA Documents</option>
+                <option Value="74">Listing Agreement</option>
+                <option Value="1156">Driver's License</option>
+                <option value="BMA Documents">BMA Documents</option>
+                <option Value="1324">STOLA Documents</option>
+            </select>
+
+            <textarea ID="txtDescription" rows="2" cols="20" id="txtDescription" name="Description" placeholder="Notes (This will display with the document after upload):"></textarea>
+
+            <!--<input type="submit" name="btnUpload" value="Upload" onclick="WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("btnUpload","", true,"","", false, false))" id="btnUpload" class="submit-button" />-->
+            <input type="submit" name="btnUpload" value="Upload" onclick="validateFields()" id="btnUpload" class="submit-button" />
+
+            <div class="morreale-form-success"><span ID="lblComplete"></span></div>
+
+            <span ID="lblFileID" Text="FileID" type="hidden"></span>
+
+            <p class="need-help">Having issues? Email <a href="mailto:webhelp@morrealeres.com?Subject=Secure Document Vault Help">webhelp@morrealeres.com</a> or call 630.545.5300</p>
+        </form>
+
+    </div>
+
+    <!--<script type="text/javascript" src="Scripts/jquery-3.4.1.min.js"></script>-->
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        
+        function validateFields() {
+            textFileNum = document.getElementById("txtFileNum");
+            if (textFileNum.value == "") {
+                textFileNum.style.display="inline";
+                window.history.back();
+            }
+        };
+        $(window).on("load", (function() {
+		// Animate loader off screen
+		    $(".hc-pre-con").fadeOut("slow");
+        }));
+
+   	    var $fileInput = $('.file-input');
+	    var $droparea = $('.file-drop-area');
+
+       // Start script for adding red borders on errors
+       var fileNumRequired = document.getElementById('RequiredFieldValidator1');
+       var fileNumInvalid = document.getElementById('CustomValidator1');
+       var documentRequired = document.getElementById('RequiredFieldValidator2');
+        
+       $(window).on("load", (function () {
+           if (fileNumInvalid.style.display != 'none') {
+               // Attach error border class to textbox
+               $("#txtFileNum").addClass("invalid-document");
+           }
+       }));
+
+       var invalidFileNumObserver = new MutationObserver(function () {
+
+           if (fileNumInvalid.style.display == 'none') {
+               // Remove error border class from textbox
+               $("#txtFileNum").removeClass("invalid-document");
+           }
+       });
+
+       var fileNumberObserver = new MutationObserver(function () {
+           if (fileNumRequired.style.display != 'none') {
+               $("#txtFileNum").addClass("invalid-document");
+           }
+           if (fileNumRequired.style.display == 'none') {
+               $("#txtFileNum").removeClass("invalid-document");
+           }
+       });
+
+       var uploadDocumentobserver = new MutationObserver(function () {
+           if (documentRequired.style.display != 'none') {
+               $("#fileDrop").addClass("invalid-document");
+           }
+           if (documentRequired.style.display == 'none') {
+               $("#fileDrop").removeClass("invalid-document");
+           }
+       });
+
+       fileNumberObserver.observe(fileNumRequired, { attributes: true, childList: true });
+       uploadDocumentobserver.observe(documentRequired, { attributes: true, childList: true });
+       invalidFileNumObserver.observe(fileNumInvalid, { attributes: true, childList: true });
+       // End script for adding red borders on errors
+
+
+	// highlight drag area
+	$fileInput.on('dragenter focus click', function() {
+	  $droparea.addClass('is-active');
+	});
+
+	// back to normal state
+	$fileInput.on('dragleave blur drop', function() {
+	  $droparea.removeClass('is-active');
+	});
+
+	// change inner text
+	$fileInput.on('change', function() {
+	  var filesCount = $(this)[0].files.length;
+	  var $textContainer = $(this).prev();
+
+	  if (filesCount === 1) {
+	    // if single file is selected, show file name
+	    var fileName = $(this).val().split('\\').pop();
+	    $textContainer.text(fileName);
+	  } else {
+	    // otherwise show number of files
+	    $textContainer.text(filesCount + ' files selected');
+	  }
+	});
+    </script>
+</body>
+</html>
