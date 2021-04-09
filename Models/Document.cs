@@ -8,7 +8,7 @@ namespace RWMVC.Models
         public string FileNumber { get; set; }
         [Required]
         public byte[] File { get; set; }
-        public string DocumentType { get; set; }
+        public int DocumentType { get; set; }
         public string Description { get; set; }
     }
 

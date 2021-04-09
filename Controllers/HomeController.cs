@@ -23,10 +23,6 @@ namespace RWMVC.Controllers
             return View();
         }
 
-        public IActionResult SecureUpload()
-        {
-            return View();
-        }
         [HttpPost]
         public IActionResult DoUpload(Document doc)
         {

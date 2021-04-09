@@ -28,19 +28,70 @@
 </head>
 <body id="secure-upload-body">
     <div class="hc-pre-con"></div>
-
     <div class="container">
-
-        <form id="form1" class="morreale-form secure-upload" action="/Home/DoUpload" method="post">
-
+        @using (Html.BeginForm("form1"))
+        {
+        <div class="morreale-form secure-upload">
+            @Html.AntiForgeryToken()
             <img src="https://morrealeres.com/morreale/wp-content/themes/morreale/images/MRES-Logo-Only-2.png)" class="logo" />
 
             <img src="https://morrealeres.com/morreale/wp-content/themes/morreale/images/secure-document-vault-2.png)" class="logo" />
 
             <span ID="Label1" class="hidden-label">File Number: </span>
+            @Html.TextBoxFor(m => m.FileNumber, new { placeholder = "File Number" })
+            @Html.ValidationMessageFor(m => m.FileNumber, "", new { @class = "error-form" })
+            @Html.ValidationMessageFor(m => m.FileNumber, "", new { @class = "error-form" })
 
-            <input type="text" ID="txtFileNum" name="FileNumber" placeholder="File Number"/>
-           
+            <span ID="lblValidFN"></span>
+
+            <div class="file-drop-area" id="fileDrop">
+                <span class="fake-btn">Choose Document</span>
+                <span class="file-msg">or drag and drop files here</span>
+                @Html.TextBoxFor(m => m.File, new { type = "file" })
+                <input type="file" name="File" ID="fuDocument" class="file-input" />
+            </div>
+            @{ 
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Mortgage Statement",
+                    Value = "57"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "HOA Documents",
+                    Value = "1668",
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Listing Agreement",
+                    Value = "74"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Driver's License",
+                    Value = "1156"
+                });
+                listItems.Add(new SelectListItem
+                {
+                    Text = "Onboarding Documents",
+                    Value = "1324"
+                });
+            }
+            @Html.DropDownListFor(m => m.DocumentType, listItems, "--Select Document Type--")
+            <input type="submit" name="btnUpload" value="Upload" onclick="validateFields()" id="btnUpload" class="submit-button" />
+            <p class="need-help">Having issues? Email <a href="mailto:webhelp@morrealeres.com?Subject=Secure Document Vault Help">webhelp@morrealeres.com</a> or call 630.545.5300</p>
+        </div>
+        }
+        <form id="form1" class="morreale-form secure-upload" action="/Home/DoUpload" method="post">
+
+
+
+            
+
+            
+            <!--<input type="text" ID="txtFileNum" name="FileNumber" placeholder="File Number"/> -->
+
             <span ID="RequiredFieldValidator1" Class="error-form" style="display:none;">This field is required.</span>
 
             <span ID="CustomValidator1" Class="error-form" style="display:none">This is not a valid file number.</span>
